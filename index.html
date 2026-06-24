@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Control Dashboard Widget</title>
+<title>Event Control Time and Weather</title>
 
 <style>
   body {
@@ -11,144 +11,144 @@
     padding: 0;
     background: transparent;
     font-family: Arial, Helvetica, sans-serif;
-    color: #1f2937;
+    color: #111827;
+    overflow: hidden;
   }
 
   .widget {
     width: 100%;
-    max-width: 900px;
+    max-width: 760px;
     box-sizing: border-box;
-    padding: 18px 22px;
-    border-radius: 22px;
+    padding: 14px 18px;
+    border-radius: 18px;
     background: #ffffff;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+  }
+
+  .label {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #374151;
+    margin-bottom: 8px;
   }
 
   .top-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 18px;
+    align-items: flex-start;
+    gap: 16px;
   }
 
   .clock {
-    font-size: 58px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    line-height: 1;
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    line-height: 0.95;
   }
 
   .date {
-    margin-top: 8px;
-    font-size: 18px;
+    margin-top: 6px;
+    font-size: 16px;
     font-weight: 700;
     color: #374151;
   }
 
   .weather-main {
     text-align: right;
+    min-width: 210px;
   }
 
   .location {
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
     color: #111827;
   }
 
   .temp {
-    font-size: 42px;
-    font-weight: 800;
+    font-size: 36px;
+    font-weight: 900;
     margin-top: 4px;
+    line-height: 1;
   }
 
   .condition {
-    font-size: 16px;
+    font-size: 14px;
     color: #4b5563;
-    font-weight: 600;
+    font-weight: 700;
+    margin-top: 6px;
   }
 
   .section-title {
-    margin-top: 18px;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 800;
+    margin-top: 14px;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 900;
     color: #374151;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.8px;
   }
 
   .forecast {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-    margin-top: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
 
   .hour-card {
     background: #f9fafb;
-    border-radius: 14px;
-    padding: 10px 8px;
+    border-radius: 12px;
+    padding: 8px 6px;
     text-align: center;
     border: 1px solid #e5e7eb;
   }
 
   .hour-time {
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 13px;
+    font-weight: 900;
     color: #111827;
   }
 
   .icon {
-    font-size: 28px;
-    margin: 5px 0;
+    font-size: 22px;
+    margin: 3px 0;
   }
 
   .hour-temp {
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 14px;
+    font-weight: 900;
     color: #111827;
   }
 
   .rain {
-    font-size: 12px;
+    font-size: 11px;
     color: #2563eb;
-    margin-top: 3px;
-    font-weight: 600;
+    margin-top: 2px;
+    font-weight: 700;
   }
 
   .wind {
-    font-size: 12px;
+    font-size: 11px;
     color: #4b5563;
-    margin-top: 3px;
-    font-weight: 600;
+    margin-top: 2px;
+    font-weight: 700;
   }
 
   .updated {
-    margin-top: 12px;
-    font-size: 11px;
+    margin-top: 8px;
+    font-size: 10px;
     color: #9ca3af;
     text-align: right;
   }
 
-  @media (max-width: 800px) {
-    .forecast {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (max-width: 600px) {
-    .top-row {
-      flex-direction: column;
-      align-items: flex-start;
+  @media (max-width: 620px) {
+    .clock {
+      font-size: 44px;
     }
 
     .weather-main {
-      text-align: left;
-    }
-
-    .clock {
-      font-size: 44px;
+      min-width: 170px;
     }
 
     .forecast {
@@ -160,6 +160,8 @@
 
 <body>
   <div class="widget">
+    <div class="label">EVENT CONTROL TIME</div>
+
     <div class="top-row">
       <div>
         <div class="clock" id="clock">--:--:--</div>
@@ -173,7 +175,7 @@
       </div>
     </div>
 
-    <div class="section-title">NEXT 6 HOURS</div>
+    <div class="section-title">NEXT 4 HOURS</div>
     <div class="forecast" id="forecast"></div>
 
     <div class="updated" id="updated">Weather data loading...</div>
@@ -251,7 +253,6 @@
       }
 
       const data = await response.json();
-
       const currentWeather = weatherCodeToText(data.current.weather_code);
 
       document.getElementById("temp").textContent =
@@ -269,7 +270,7 @@
       for (let i = 0; i < data.hourly.time.length; i++) {
         const hourDate = new Date(data.hourly.time[i]);
 
-        if (hourDate >= now && cardsAdded < 6) {
+        if (hourDate >= now && cardsAdded < 4) {
           const hourLabel = hourDate.toLocaleTimeString("en-IE", {
             hour: "2-digit",
             minute: "2-digit",
