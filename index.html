@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Control Dashboard Widget</title>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1f2937;
+  }
+
+  .widget {
+    width: 100%;
+    max-width: 760px;
+    box-sizing: border-box;
+    padding: 18px 22px;
+    border-radius: 22px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  }
+
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .clock {
+    font-size: 58px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .date {
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #374151;
+  }
+
+  .weather-main {
+    text-align: right;
+  }
+
+  .location {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #111827;
+  }
+
+  .temp {
+    font-size: 42px;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+
+  .condition {
+    font-size: 16px;
+    color: #4b5563;
+    font-weight: 600;
+  }
+
+  .forecast {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .day {
+    background: #f9fafb;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+  }
+
+  .day-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  .icon {
+    font-size: 30px;
+    margin: 6px 0;
+  }
+
+  .day-temp {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .rain {
+    font-size: 13px;
+    color: #2563eb;
+    margin-top: 3px;
+  }
+
+  .updated {
+    margin-top: 12px;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: right;
+  }
+
+  @media (max-width: 600px) {
+    .top-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .weather-main {
+      text-align: left;
+    }
+
+    .clock {
+      font-size: 44px;
+    }
+
+    .forecast {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="widget">
+    <div class="top-row">
+      <div>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="date" id="date">Loading date...</div>
+      </div>
+
+      <div class="weather-main">
+        <div class="location">MARLAY PARK / RATHFARNHAM</div>
+        <div class="temp" id="temp">--°C</div>
+        <div class="condition" id="condition">Loading weather...</div>
+      </div>
+    </div>
+
+    <div class="forecast" id="forecast"></div>
+
+    <div class="updated" id="updated">Weather data loading...</div>
+  </div>
+
+<script>
+  const latitude = 53.277;
+  const longitude = -6.268;
+
+  function updateClock() {
+    const now = new Date();
+
+    document.getElementById("clock").textContent = now.toLocaleTimeString("en-IE", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
+
+    document.getElementById("date").textContent = now.toLocaleDateString("en-IE", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  }
+
+  function weatherCodeToText(code) {
+    const codes = {
+      0: ["☀️", "Clear sky"],
+      1: ["🌤️", "Mainly clear"],
+      2: ["⛅", "Partly cloudy"],
+      3: ["☁️", "Overcast"],
+      45: ["🌫️", "Fog"],
+      48: ["🌫️", "Depositing rime fog"],
+      51: ["🌦️", "Light drizzle"],
+      53: ["🌦️", "Moderate drizzle"],
+      55: ["🌧️", "Dense drizzle"],
+      61: ["🌧️", "Slight rain"],
+      63: ["🌧️", "Moderate rain"],
+      65: ["🌧️", "Heavy rain"],
+      71: ["🌨️", "Slight snow"],
+      73: ["🌨️", "Moderate snow"],
+      75: ["❄️", "Heavy snow"],
+      80: ["🌦️", "Rain showers"],
+      81: ["🌧️", "Heavy showers"],
+      82: ["⛈️", "Violent showers"],
+      95: ["⛈️", "Thunderstorm"],
+      96: ["⛈️", "Thunderstorm with hail"],
+      99: ["⛈️", "Severe thunderstorm"]
+    };
+
+    return codes[code] || ["🌡️", "Weather update"];
+  }
+
+  async function loadWeather() {
+    const url =
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+      `&current=temperature_2m,weather_code` +
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
+      `&timezone=Europe%2FDublin`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const current = weatherCodeToText(data.current.weather_code);
+
+      document.getElementById("temp").textContent =
+        Math.round(data.current.temperature_2m) + "°C";
+
+      document.getElementById("condition").textContent = current[1];
+
+      const forecast = document.getElementById("forecast");
+      forecast.innerHTML = "";
+
+      for (let i = 0; i < 3; i++) {
+        const dayDate = new Date(data.daily.time[i]);
+        const dayName = dayDate.toLocaleDateString("en-IE", { weekday: "short" });
+        const weather = weatherCodeToText(data.daily.weather_code[i]);
+
+        forecast.innerHTML += `
+          <div class="day">
+            <div class="day-name">${dayName}</div>
+            <div class="icon">${weather[0]}</div>
+            <div class="day-temp">
+              ${Math.round(data.daily.temperature_2m_max[i])}°C / ${Math.round(data.daily.temperature_2m_min[i])}°C
+            </div>
+            <div class="rain">Rain ${data.daily.precipitation_probability_max[i]}%</div>
+          </div>
+        `;
+      }
+
+      const now = new Date();
+      document.getElementById("updated").textContent =
+        "Updated " + now.toLocaleTimeString("en-IE", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false
+        });
+
+    } catch (error) {
+      document.getElementById("condition").textContent = "Weather unavailable";
+      document.getElementById("updated").textContent = "Unable to load weather data";
+    }
+  }
+
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  loadWeather();
+  setInterval(loadWeather, 15 * 60 * 1000);
+</script>
+</body>
+</html>
