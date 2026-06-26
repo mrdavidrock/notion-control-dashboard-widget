@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Marlay Park Weather Hub</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --panel2:#1f2937;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --line:#374151;
+      --blue:#38bdf8;
+      --green:#22c55e;
+      --yellow:#facc15;
+      --orange:#fb923c;
+      --red:#f87171;
+      --card:#ffffff;
+      --ink:#1f2937;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#0f172a 0%,#111827 55%,#0b1220 100%);
+      color:var(--text);
+    }
+    header{
+      padding:22px 18px 14px;
+      border-bottom:1px solid var(--line);
+      position:sticky;
+      top:0;
+      background:rgba(15,23,42,.92);
+      backdrop-filter:blur(8px);
+      z-index:10;
+    }
+    .wrap{max-width:1280px;margin:0 auto}
+    h1{margin:0;font-size:28px;line-height:1.15}
+    .sub{color:var(--muted);margin-top:6px;font-size:14px}
+    .toprow{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin:18px 0;
+    }
+    .metric{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      min-height:104px;
+    }
+    .metric .label{font-size:13px;color:var(--muted);margin-bottom:8px}
+    .metric .value{font-size:30px;font-weight:700}
+    .metric .small{font-size:13px;color:var(--muted);margin-top:7px}
+    .riskbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .pill{
+      padding:9px 12px;
+      border-radius:999px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      color:var(--text);
+      font-weight:700;
+      font-size:13px;
+    }
+    .pill.ok{border-color:rgba(34,197,94,.5)}
+    .pill.watch{border-color:rgba(250,204,21,.7);color:#fde68a}
+    .pill.warn{border-color:rgba(248,113,113,.8);color:#fecaca}
+    main{padding:0 18px 36px}
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:16px;
+      align-items:start;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      margin-bottom:16px;
+    }
+    .card h2{
+      margin:0;
+      padding:16px 18px;
+      font-size:18px;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.025);
+    }
+    .card .body{padding:16px 18px}
+    iframe{
+      width:100%;
+      border:0;
+      display:block;
+      background:#fff;
+    }
+    .embed{height:420px}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+    th,td{
+      text-align:left;
+      padding:10px 8px;
+      border-bottom:1px solid var(--line);
+      white-space:nowrap;
+    }
+    th{color:var(--muted);font-weight:700}
+    tr:last-child td{border-bottom:0}
+    .status{
+      display:inline-block;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      background:var(--panel2);
+    }
+    .status.ok{color:#bbf7d0}
+    .status.watch{color:#fef08a}
+    .status.warn{color:#fecaca}
+    .links{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+    .linkbtn{
+      display:block;
+      text-decoration:none;
+      color:var(--text);
+      background:var(--panel2);
+      border:1px solid var(--line);
+      padding:13px;
+      border-radius:13px;
+      font-weight:700;
+    }
+    .linkbtn span{
+      display:block;
+      color:var(--muted);
+      font-weight:400;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .note{
+      color:var(--muted);
+      line-height:1.45;
+      font-size:13px;
+    }
+    .footer{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:8px;
+    }
+    .error{
+      padding:14px;
+      border-radius:12px;
+      background:#3b1f1f;
+      border:1px solid #7f1d1d;
+      color:#fecaca;
+    }
+    @media (max-width:900px){
+      .toprow{grid-template-columns:repeat(2,1fr)}
+      .grid{grid-template-columns:1fr}
+      header{position:relative}
+    }
+    @media (max-width:560px){
+      .toprow{grid-template-columns:1fr}
+      .links{grid-template-columns:1fr}
+      h1{font-size:23px}
+      th,td{font-size:12px;padding:8px 5px}
+      .embed{height:340px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🌲 Marlay Park Weather Hub</h1>
+    <div class="sub">Marlay Park, Dublin · Event control weather view · Live forecast, wind map, rain radar and quick links</div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="toprow">
+      <div class="metric">
+        <div class="label">Temperature</div>
+        <div class="value" id="temp">Loading…</div>
+        <div class="small" id="feels">Open-Meteo forecast</div>
+      </div>
+      <div class="metric">
+        <div class="label">Wind / Gust</div>
+        <div class="value" id="wind">Loading…</div>
+        <div class="small" id="winddir">Surface wind</div>
+      </div>
+      <div class="metric">
+        <div class="label">Rain chance</div>
+        <div class="value" id="rainchance">Loading…</div>
+        <div class="small" id="rainamount">Next available hour</div>
+      </div>
+      <div class="metric">
+        <div class="label">Updated</div>
+        <div class="value" id="updated">—</div>
+        <div class="small">Refresh page to update</div>
+      </div>
+    </section>
+
+    <section class="riskbar">
+      <div class="pill" id="windRisk">Wind: checking</div>
+      <div class="pill" id="gustRisk">Gusts: checking</div>
+      <div class="pill" id="rainRisk">Rain: checking</div>
+      <div class="pill" id="heatRisk">Heat: checking</div>
+    </section>
+
+    <div class="grid">
+      <section>
+        <div class="card">
+          <h2>Next 12 hours — event control table</h2>
+          <div class="body" id="forecastTable">Loading forecast…</div>
+        </div>
+
+        <div class="card">
+          <h2>Windy — wind at Marlay Park</h2>
+          <iframe class="embed"
+            src="https://embed.windy.com/embed2.html?lat=53.278&lon=-6.268&detailLat=53.278&detailLon=-6.268&width=650&height=450&zoom=11&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=12&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"
+            title="Windy wind map for Marlay Park">
+          </iframe>
+        </div>
+
+        <div class="card">
+          <h2>Windy — rain / thunder view</h2>
+          <iframe class="embed"
+            src="https://embed.windy.com/embed2.html?lat=53.278&lon=-6.268&detailLat=53.278&detailLon=-6.268&width=650&height=450&zoom=10&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=12&pressure=true&type=map&location=coordinates&detail=true&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1"
+            title="Windy rain map for Marlay Park">
+          </iframe>
+        </div>
+      </section>
+
+      <aside>
+        <div class="card">
+          <h2>Weather app quick links</h2>
+          <div class="body">
+            <div class="links">
+              <a class="linkbtn" target="_blank" href="https://www.windy.com/53.278/-6.268?53.278,-6.268,11">Windy<span>Wind, gusts, rain layers</span></a>
+              <a class="linkbtn" target="_blank" href="https://www.ventusky.com/?p=53.278;-6.268;10&l=wind-10m">Ventusky<span>Good visual model comparison</span></a>
+              <a class="linkbtn" target="_blank" href="https://www.met.ie/weather-forecast/dublin">Met Éireann<span>Official Irish forecast</span></a>
+              <a class="linkbtn" target="_blank" href="https://www.yr.no/en/forecast/daily-table/2-2964574/Ireland/Leinster/South%20Dublin/Rathfarnham">Yr.no<span>Alternative forecast source</span></a>
+              <a class="linkbtn" target="_blank" href="https://open-meteo.com/en/docs#latitude=53.278&longitude=-6.268">Open-Meteo<span>Data used in this dashboard</span></a>
+              <a class="linkbtn" target="_blank" href="https://weather.metoffice.gov.uk/forecast/gc7x3v8hm">Met Office<span>UK model view for Dublin area</span></a>
+            </div>
+            <p class="note" style="margin-top:14px">
+              Some weather websites block embedding inside another page. Where they block it, this hub uses a direct button instead.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Rain radar — RainViewer</h2>
+          <iframe class="embed"
+            src="https://www.rainviewer.com/map.html?loc=53.278,-6.268,10&oFa=0&oC=1&oU=0&oCS=1&oF=0&oAP=1&c=3&o=83&lm=1&layer=radar&sm=1&sn=1"
+            title="RainViewer radar for Marlay Park">
+          </iframe>
+        </div>
+
+        <div class="card">
+          <h2>Suggested watch thresholds</h2>
+          <div class="body">
+            <table>
+              <tr><th>Trigger</th><th>Suggested action</th></tr>
+              <tr><td>Gusts 40–50 km/h</td><td>Monitor structures and signage</td></tr>
+              <tr><td>Gusts 50+ km/h</td><td>Escalate to production / H&S</td></tr>
+              <tr><td>Rain &gt; 2 mm/hr</td><td>Watch ground conditions and slips</td></tr>
+              <tr><td>Thunder risk</td><td>Check lightning plan and PA messaging</td></tr>
+              <tr><td>Temp 25°C+</td><td>Heat welfare, water and staff rotation</td></tr>
+            </table>
+            <p class="note">Adjust these to your actual EMP / licence conditions. Do not use this as the sole safety decision tool.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer">
+      Coordinates used: 53.278, -6.268. Forecast data from Open-Meteo. Embedded maps supplied by Windy and RainViewer where available.
+    </div>
+  </div>
+</main>
+
+<script>
+  const LAT = 53.278;
+  const LON = -6.268;
+
+  function kmh(x){ return Math.round(x) + " km/h"; }
+  function degToCompass(num) {
+    const val = Math.floor((num / 22.5) + 0.5);
+    const arr = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+    return arr[(val % 16)];
+  }
+  function riskClass(label, value, warn, watch){
+    const el = document.getElementById(label);
+    el.classList.remove("ok","watch","warn");
+    if(value >= warn){ el.classList.add("warn"); }
+    else if(value >= watch){ el.classList.add("watch"); }
+    else { el.classList.add("ok"); }
+  }
+  function fmtTime(iso){
+    const d = new Date(iso);
+    return d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  }
+
+  async function loadWeather(){
+    const params = new URLSearchParams({
+      latitude: LAT,
+      longitude: LON,
+      current: "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+      hourly: "temperature_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+      forecast_days: "3",
+      timezone: "Europe/Dublin",
+      wind_speed_unit: "kmh"
+    });
+
+    const url = "https://api.open-meteo.com/v1/forecast?" + params.toString();
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("Weather fetch failed");
+    const data = await res.json();
+
+    const c = data.current;
+    document.getElementById("temp").textContent = Math.round(c.temperature_2m) + "°C";
+    document.getElementById("feels").textContent = "Feels like " + Math.round(c.apparent_temperature) + "°C · RH " + c.relative_humidity_2m + "%";
+    document.getElementById("wind").textContent = kmh(c.wind_speed_10m) + " / " + kmh(c.wind_gusts_10m);
+    document.getElementById("winddir").textContent = degToCompass(c.wind_direction_10m) + " · " + Math.round(c.wind_direction_10m) + "°";
+    document.getElementById("rainchance").textContent = (data.hourly.precipitation_probability[0] ?? "—") + "%";
+    document.getElementById("rainamount").textContent = "Rain now: " + (c.rain ?? 0) + " mm";
+    document.getElementById("updated").textContent = fmtTime(c.time);
+
+    document.getElementById("windRisk").textContent = "Wind: " + kmh(c.wind_speed_10m);
+    document.getElementById("gustRisk").textContent = "Gusts: " + kmh(c.wind_gusts_10m);
+    document.getElementById("rainRisk").textContent = "Rain: " + (c.rain ?? 0) + " mm/hr";
+    document.getElementById("heatRisk").textContent = "Heat: " + Math.round(c.temperature_2m) + "°C";
+
+    riskClass("windRisk", c.wind_speed_10m, 40, 25);
+    riskClass("gustRisk", c.wind_gusts_10m, 50, 40);
+    riskClass("rainRisk", c.rain ?? 0, 4, 2);
+    riskClass("heatRisk", c.temperature_2m, 28, 25);
+
+    const now = new Date();
+    const rows = [];
+    for(let i=0; i<data.hourly.time.length; i++){
+      const t = new Date(data.hourly.time[i]);
+      if(t >= now && rows.length < 12){
+        const gust = data.hourly.wind_gusts_10m[i] ?? 0;
+        const rain = data.hourly.precipitation[i] ?? 0;
+        let status = "OK", cls = "ok";
+        if(gust >= 50 || rain >= 4){ status = "Escalate"; cls = "warn"; }
+        else if(gust >= 40 || rain >= 2 || (data.hourly.temperature_2m[i] ?? 0) >= 25){ status = "Watch"; cls = "watch"; }
+
+        rows.push(`
+          <tr>
+            <td>${fmtTime(data.hourly.time[i])}</td>
+            <td>${Math.round(data.hourly.temperature_2m[i])}°C</td>
+            <td>${data.hourly.precipitation_probability[i] ?? "—"}%</td>
+            <td>${data.hourly.precipitation[i] ?? 0} mm</td>
+            <td>${kmh(data.hourly.wind_speed_10m[i])}</td>
+            <td>${kmh(gust)}</td>
+            <td>${degToCompass(data.hourly.wind_direction_10m[i] ?? 0)}</td>
+            <td><span class="status ${cls}">${status}</span></td>
+          </tr>
+        `);
+      }
+    }
+
+    document.getElementById("forecastTable").innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th><th>Temp</th><th>Rain %</th><th>Rain</th><th>Wind</th><th>Gust</th><th>Dir</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>${rows.join("")}</tbody>
+      </table>
+    `;
+  }
+
+  loadWeather().catch(err => {
+    document.getElementById("forecastTable").innerHTML = '<div class="error">Could not load live forecast. Check internet access or Open-Meteo availability.</div>';
+    document.getElementById("temp").textContent = "Error";
+    document.getElementById("wind").textContent = "Error";
+    document.getElementById("rainchance").textContent = "Error";
+    console.error(err);
+  });
+</script>
+</body>
+</html>
