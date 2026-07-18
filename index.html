@@ -8,23 +8,32 @@
     content="width=device-width, initial-scale=1.0"
   >
 
+  <meta
+    http-equiv="Cache-Control"
+    content="no-cache, no-store, must-revalidate"
+  >
+
   <title>Forest Fest Event Control Dashboard</title>
 
   <style>
     :root {
       --background: #050706;
-      --panel: #0c100e;
-      --panel-light: #111714;
-      --border: #303833;
-      --text: #ffffff;
-      --muted: #aab3ad;
+      --panel: #0d110f;
+      --panel-light: #131815;
+      --border: #343b37;
 
-      --orange: #ff9800;
+      --text: #ffffff;
+      --muted: #adb5b0;
+
+      --yellow: #ffd000;
+      --orange: #ff9500;
       --pink: #ff4775;
+      --blue: #3cadff;
+
       --green: #76d116;
       --amber: #ffb300;
       --red: #ff3348;
-      --blue: #38a8ff;
+      --grey: #a6ada9;
     }
 
     * {
@@ -49,18 +58,21 @@
       width: 100%;
       min-height: 100vh;
       padding: 22px;
+
       background:
         radial-gradient(
           circle at 50% 0%,
-          rgba(20, 63, 39, 0.14),
-          transparent 38%
+          rgba(20, 68, 42, 0.15),
+          transparent 36%
         ),
         var(--background);
     }
 
+    /* TOP AREA */
+
     .top-section {
       display: grid;
-      grid-template-columns: 260px 1fr 1fr;
+      grid-template-columns: 250px 1fr 1fr;
       align-items: center;
       gap: 28px;
       margin-bottom: 18px;
@@ -70,25 +82,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 155px;
+      min-height: 150px;
     }
 
     .logo {
       display: block;
       width: 100%;
-      max-width: 245px;
+      max-width: 235px;
       max-height: 145px;
       object-fit: contain;
     }
 
-    .time-area {
-      min-width: 0;
-    }
-
     .section-label {
       margin-bottom: 8px;
-      color: #ffd000;
-      font-size: 20px;
+      color: var(--yellow);
+      font-size: 19px;
       font-weight: 900;
       letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -96,7 +104,7 @@
 
     .clock {
       color: #ffffff;
-      font-size: clamp(68px, 7vw, 126px);
+      font-size: clamp(68px, 7vw, 124px);
       font-weight: 900;
       line-height: 0.9;
       letter-spacing: 1px;
@@ -106,22 +114,22 @@
     .date {
       margin-top: 14px;
       color: #ffffff;
-      font-size: clamp(20px, 2vw, 32px);
+      font-size: clamp(20px, 1.8vw, 30px);
       font-weight: 700;
     }
 
     .weather-main {
-      min-height: 155px;
-      padding-left: 34px;
-      border-left: 1px solid #3c433f;
+      min-height: 150px;
+      padding-left: 32px;
+      border-left: 1px solid #3f4742;
       text-align: right;
     }
 
     .location {
-      color: #ffd000;
-      font-size: clamp(18px, 1.6vw, 27px);
+      color: var(--yellow);
+      font-size: clamp(17px, 1.5vw, 25px);
       font-weight: 900;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
@@ -129,18 +137,18 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 22px;
+      gap: 20px;
       margin-top: 10px;
     }
 
     .current-icon {
-      font-size: clamp(48px, 5vw, 82px);
+      font-size: clamp(48px, 5vw, 78px);
       line-height: 1;
     }
 
     .temp {
       color: #ffffff;
-      font-size: clamp(64px, 7vw, 116px);
+      font-size: clamp(62px, 7vw, 108px);
       font-weight: 900;
       line-height: 0.9;
     }
@@ -148,15 +156,18 @@
     .condition {
       margin-top: 14px;
       color: #ffffff;
-      font-size: clamp(18px, 1.7vw, 29px);
-      font-weight: 500;
+      font-size: clamp(17px, 1.5vw, 27px);
+      line-height: 1.3;
     }
+
+    /* FORECAST */
 
     .forecast-section {
       margin-bottom: 18px;
       padding: 14px 18px 12px;
       border: 1px solid var(--border);
       border-radius: 16px;
+
       background:
         linear-gradient(
           135deg,
@@ -166,8 +177,7 @@
     }
 
     .forecast-title {
-      margin-bottom: 8px;
-      color: #ffffff;
+      margin-bottom: 9px;
       font-size: 19px;
       font-weight: 900;
       letter-spacing: 0.5px;
@@ -181,59 +191,56 @@
     }
 
     .hour-card {
-      min-height: 168px;
-      padding: 12px 10px;
+      min-height: 160px;
+      padding: 11px 9px;
       border: 1px solid #353d38;
       border-radius: 13px;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.035),
-          rgba(255, 255, 255, 0.012)
-        );
+      background: rgba(255, 255, 255, 0.025);
       text-align: center;
     }
 
     .hour-time {
-      font-size: 23px;
+      font-size: 22px;
       font-weight: 900;
     }
 
     .hour-icon {
       margin: 6px 0;
-      font-size: 38px;
+      font-size: 37px;
       line-height: 1;
     }
 
     .hour-temp {
-      font-size: 28px;
+      font-size: 27px;
       font-weight: 900;
     }
 
     .rain {
       margin-top: 4px;
       color: var(--blue);
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
     }
 
     .wind {
       margin-top: 4px;
       color: #ffffff;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
     }
 
     .weather-updated {
       margin-top: 8px;
-      color: #a8ada9;
-      font-size: 14px;
+      color: var(--muted);
+      font-size: 13px;
       text-align: right;
     }
 
+    /* MAIN PANELS */
+
     .information-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1.16fr;
+      grid-template-columns: 1fr 1.1fr 1.15fr;
       gap: 14px;
     }
 
@@ -242,12 +249,7 @@
       padding: 14px;
       border: 2px solid var(--border);
       border-radius: 14px;
-      background:
-        linear-gradient(
-          160deg,
-          rgba(255, 255, 255, 0.025),
-          rgba(255, 255, 255, 0.008)
-        );
+      background: rgba(255, 255, 255, 0.018);
     }
 
     .control-panel {
@@ -260,26 +262,22 @@
 
     .status-panel {
       border-color: var(--green);
+
       background:
         radial-gradient(
           circle at center,
-          rgba(91, 185, 18, 0.16),
-          rgba(0, 0, 0, 0.05) 58%
-        ),
-        linear-gradient(
-          160deg,
-          rgba(255, 255, 255, 0.02),
-          rgba(255, 255, 255, 0.005)
+          rgba(91, 185, 18, 0.17),
+          rgba(0, 0, 0, 0.05) 60%
         );
     }
 
     .panel-heading {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
       min-height: 44px;
       margin-bottom: 10px;
-      font-size: clamp(18px, 1.5vw, 25px);
+      font-size: clamp(18px, 1.45vw, 24px);
       font-weight: 900;
       text-transform: uppercase;
     }
@@ -294,14 +292,15 @@
 
     .panel-heading-icon {
       flex: 0 0 auto;
-      font-size: 31px;
+      font-size: 30px;
     }
 
-    .message-list,
-    .lost-list {
+    /* CONTROL MESSAGES */
+
+    .message-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
     }
 
     .message-item {
@@ -311,17 +310,9 @@
       gap: 10px;
       min-height: 76px;
       padding: 9px 10px;
-      border-bottom: 1px solid #343b37;
-      background: rgba(255, 255, 255, 0.018);
-    }
-
-    .message-item:first-child {
-      border-radius: 9px 9px 0 0;
-    }
-
-    .message-item:last-child {
-      border-bottom: 0;
-      border-radius: 0 0 9px 9px;
+      border: 1px solid #343b37;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .message-icon {
@@ -335,91 +326,120 @@
       font-size: 22px;
     }
 
-    .message-text {
-      font-size: clamp(17px, 1.35vw, 23px);
-      font-weight: 600;
+    .message-title {
+      font-size: clamp(17px, 1.25vw, 22px);
+      font-weight: 700;
       line-height: 1.25;
+    }
+
+    .message-description {
+      margin-top: 4px;
+      color: #d9ddda;
+      font-size: 14px;
+      line-height: 1.3;
     }
 
     .message-time {
       color: #c1c7c3;
-      font-size: 16px;
+      font-size: 15px;
       white-space: nowrap;
     }
 
-    .empty-message {
+    /* LOST PERSON */
+
+    .lost-list {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 235px;
-      padding: 20px;
-      border: 1px dashed #4b534e;
-      border-radius: 10px;
-      color: var(--muted);
-      font-size: 20px;
-      font-weight: 700;
-      text-align: center;
+      flex-direction: column;
+      gap: 7px;
     }
 
     .lost-item {
-      padding: 12px;
-      border: 1px solid #3d4540;
-      border-radius: 9px;
-      background: rgba(255, 255, 255, 0.018);
-    }
-
-    .lost-person-top {
       display: grid;
-      grid-template-columns: 48px 1fr auto;
-      align-items: start;
-      gap: 10px;
+      grid-template-columns: 92px 1fr;
+      gap: 12px;
+      padding: 10px;
+      border: 1px solid #3d4540;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
     }
 
-    .lost-icon {
+    .lost-photo-wrap {
+      width: 92px;
+      height: 108px;
+      overflow: hidden;
+      border: 2px solid var(--pink);
+      border-radius: 8px;
+      background: #1a1f1c;
+    }
+
+    .lost-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .lost-photo-placeholder {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: var(--pink);
-      font-size: 22px;
+      width: 100%;
+      height: 100%;
+      font-size: 42px;
+    }
+
+    .lost-content {
+      min-width: 0;
+    }
+
+    .lost-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .lost-title {
-      font-size: clamp(18px, 1.4vw, 24px);
+      font-size: clamp(18px, 1.35vw, 23px);
       font-weight: 900;
-    }
-
-    .lost-description {
-      margin-top: 3px;
-      color: #e5e7e6;
-      font-size: clamp(15px, 1.1vw, 19px);
-      line-height: 1.3;
+      line-height: 1.2;
     }
 
     .lost-time {
       color: var(--pink);
-      font-size: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .lost-description {
+      margin-top: 6px;
+      color: #e3e6e4;
+      font-size: clamp(14px, 1vw, 17px);
+      line-height: 1.3;
+    }
+
+    .lost-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .lost-tag {
+      display: inline-block;
+      padding: 4px 7px;
+      border: 1px solid rgba(255, 71, 117, 0.65);
+      border-radius: 6px;
+      background: rgba(255, 71, 117, 0.13);
+      color: #ffffff;
+      font-size: 13px;
       font-weight: 700;
     }
 
-    .lost-location {
-      margin-top: 10px;
-      padding-left: 58px;
-      color: #ffffff;
-      font-size: clamp(15px, 1.1vw, 19px);
-      line-height: 1.25;
-    }
-
-    .lost-location-icon {
-      margin-right: 6px;
-      color: var(--pink);
-    }
+    /* STATUS */
 
     .status-content {
       display: flex;
-      min-height: 310px;
+      min-height: 330px;
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -428,50 +448,49 @@
     }
 
     .status-label {
-      color: #ffffff;
-      font-size: clamp(26px, 2.2vw, 40px);
+      font-size: clamp(26px, 2.2vw, 38px);
       font-weight: 900;
       text-transform: uppercase;
     }
 
     .status-value {
-      margin: 8px 0 2px;
+      margin: 10px 0 2px;
       color: var(--green);
-      font-size: clamp(88px, 9vw, 160px);
+      font-size: clamp(86px, 8.5vw, 150px);
       font-weight: 900;
-      line-height: 0.95;
+      line-height: 0.9;
       text-transform: uppercase;
-      text-shadow: 0 0 24px rgba(118, 209, 22, 0.2);
+      text-shadow: 0 0 25px rgba(118, 209, 22, 0.22);
     }
 
     .status-icon {
-      margin-top: 4px;
+      margin-top: 8px;
       color: var(--green);
-      font-size: 58px;
+      font-size: 54px;
       line-height: 1;
     }
 
     .status-message {
-      margin-top: 8px;
-      color: #ffffff;
-      font-size: clamp(21px, 1.8vw, 31px);
+      margin-top: 10px;
+      font-size: clamp(20px, 1.7vw, 29px);
       font-weight: 800;
       line-height: 1.25;
     }
 
     .status-updated {
-      margin-top: 16px;
+      margin-top: 15px;
       color: var(--green);
-      font-size: 16px;
+      font-size: 15px;
     }
 
     .status-panel.status-amber {
       border-color: var(--amber);
+
       background:
         radial-gradient(
           circle at center,
-          rgba(255, 179, 0, 0.17),
-          rgba(0, 0, 0, 0.05) 58%
+          rgba(255, 179, 0, 0.18),
+          rgba(0, 0, 0, 0.05) 60%
         );
     }
 
@@ -483,11 +502,12 @@
 
     .status-panel.status-red {
       border-color: var(--red);
+
       background:
         radial-gradient(
           circle at center,
-          rgba(255, 51, 72, 0.17),
-          rgba(0, 0, 0, 0.05) 58%
+          rgba(255, 51, 72, 0.19),
+          rgba(0, 0, 0, 0.05) 60%
         );
     }
 
@@ -496,6 +516,38 @@
     .status-panel.status-red .status-updated {
       color: var(--red);
     }
+
+    .status-panel.status-grey {
+      border-color: var(--grey);
+    }
+
+    .status-panel.status-grey .status-value,
+    .status-panel.status-grey .status-icon,
+    .status-panel.status-grey .status-updated {
+      color: var(--grey);
+    }
+
+    /* EMPTY AND ERRORS */
+
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 245px;
+      padding: 20px;
+      border: 1px dashed #4b534e;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 19px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .connection-error {
+      color: #ff8c98;
+    }
+
+    /* FOOTER */
 
     .footer {
       display: grid;
@@ -510,8 +562,7 @@
     }
 
     .footer-warning {
-      color: #ffffff;
-      font-size: clamp(16px, 1.45vw, 24px);
+      font-size: clamp(16px, 1.4vw, 23px);
       font-weight: 900;
       letter-spacing: 0.3px;
       text-transform: uppercase;
@@ -519,7 +570,7 @@
 
     .footer-refresh {
       color: #b8bfba;
-      font-size: 16px;
+      font-size: 15px;
       white-space: nowrap;
     }
 
@@ -528,7 +579,9 @@
       font-weight: 900;
     }
 
-    @media (max-width: 1100px) {
+    /* RESPONSIVE */
+
+    @media (max-width: 1150px) {
       .top-section {
         grid-template-columns: 190px 1fr 1fr;
         gap: 18px;
@@ -562,22 +615,18 @@
       }
 
       .logo {
-        max-width: 230px;
-      }
-
-      .time-area {
-        text-align: center;
+        max-width: 225px;
       }
 
       .clock {
-        font-size: 64px;
+        font-size: 62px;
       }
 
       .weather-main {
         min-height: auto;
         padding-top: 18px;
         padding-left: 0;
-        border-top: 1px solid #3c433f;
+        border-top: 1px solid #3f4742;
         border-left: 0;
         text-align: center;
       }
@@ -598,6 +647,15 @@
         grid-column: auto;
       }
 
+      .lost-item {
+        grid-template-columns: 78px 1fr;
+      }
+
+      .lost-photo-wrap {
+        width: 78px;
+        height: 96px;
+      }
+
       .footer {
         grid-template-columns: 1fr;
         text-align: center;
@@ -616,12 +674,15 @@
         <img
           class="logo"
           src="forest-fest-logo-white.png"
-          alt="Forest Fest 2026"
+          alt="Forest Fest"
         >
       </div>
 
       <div class="time-area">
-        <div class="section-label">Event Control Time</div>
+
+        <div class="section-label">
+          Event Control Time
+        </div>
 
         <div
           class="clock"
@@ -636,15 +697,17 @@
         >
           Loading date...
         </div>
+
       </div>
 
       <div class="weather-main">
 
         <div class="location">
-          Emo / Portlaoise
+          Emo / Portlaoise / Ireland
         </div>
 
         <div class="current-weather-row">
+
           <div
             class="current-icon"
             id="currentIcon"
@@ -658,6 +721,7 @@
           >
             --°C
           </div>
+
         </div>
 
         <div
@@ -704,43 +768,9 @@
           class="message-list"
           id="controlMessages"
         >
-
-          <div class="message-item">
-            <div class="message-icon">🚚</div>
-
-            <div class="message-text">
-              Arena vehicle curfew in place
-            </div>
-
-            <div class="message-time">
-              12:58
-            </div>
+          <div class="empty-state">
+            Loading control messages...
           </div>
-
-          <div class="message-item">
-            <div class="message-icon">💧</div>
-
-            <div class="message-text">
-              Remind all staff to hydrate and apply suncream
-            </div>
-
-            <div class="message-time">
-              11:55
-            </div>
-          </div>
-
-          <div class="message-item">
-            <div class="message-icon">🎙️</div>
-
-            <div class="message-text">
-              Stage down
-            </div>
-
-            <div class="message-time">
-              11:40
-            </div>
-          </div>
-
         </div>
 
       </article>
@@ -749,76 +779,19 @@
 
         <div class="panel-heading">
           <span class="panel-heading-icon">🧒</span>
-          <span>Lost Child / Vulnerable Person</span>
+
+          <span>
+            Lost Child / Vulnerable Person
+          </span>
         </div>
 
         <div
           class="lost-list"
           id="lostPersons"
         >
-
-          <div class="lost-item">
-
-            <div class="lost-person-top">
-
-              <div class="lost-icon">
-                🧒
-              </div>
-
-              <div>
-                <div class="lost-title">
-                  12-year-old male missing
-                </div>
-
-                <div class="lost-description">
-                  Wearing a red top, black jeans and has blond hair.
-                </div>
-              </div>
-
-              <div class="lost-time">
-                12:33
-              </div>
-
-            </div>
-
-            <div class="lost-location">
-              <span class="lost-location-icon">📍</span>
-              Last seen: <strong>Main Arena – North Side</strong>
-            </div>
-
+          <div class="empty-state">
+            Loading active cases...
           </div>
-
-          <div class="lost-item">
-
-            <div class="lost-person-top">
-
-              <div class="lost-icon">
-                🧒
-              </div>
-
-              <div>
-                <div class="lost-title">
-                  8-year-old female missing
-                </div>
-
-                <div class="lost-description">
-                  Wearing a blue hoodie and white leggings.
-                </div>
-              </div>
-
-              <div class="lost-time">
-                12:10
-              </div>
-
-            </div>
-
-            <div class="lost-location">
-              <span class="lost-location-icon">📍</span>
-              Last seen: <strong>Family Campsite – Purple</strong>
-            </div>
-
-          </div>
-
         </div>
 
       </article>
@@ -838,7 +811,7 @@
             class="status-value"
             id="siteStatus"
           >
-            Green
+            Loading
           </div>
 
           <div
@@ -852,7 +825,7 @@
             class="status-message"
             id="siteStatusMessage"
           >
-            All areas operating normally
+            Connecting to Event Control...
           </div>
 
           <div
@@ -875,8 +848,16 @@
       </div>
 
       <div class="footer-refresh">
-        Dashboard refresh:
-        <span class="refresh-value">30 seconds</span>
+
+        Last dashboard update:
+
+        <span
+          class="refresh-value"
+          id="dashboardUpdated"
+        >
+          --
+        </span>
+
       </div>
 
     </footer>
@@ -884,8 +865,23 @@
   </main>
 
   <script>
+    const API_URL =
+      "https://forest-fest-notion-api.dna-consultancy.workers.dev/";
+
     const latitude = 53.097203;
     const longitude = -7.208535;
+
+    const NOTION_REFRESH_INTERVAL = 30 * 1000;
+    const WEATHER_REFRESH_INTERVAL = 15 * 60 * 1000;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
     function updateClock() {
       const now = new Date();
@@ -905,6 +901,24 @@
           month: "long",
           year: "numeric"
         });
+    }
+
+    function formatTime(value) {
+      if (!value) {
+        return "--:--";
+      }
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "--:--";
+      }
+
+      return date.toLocaleTimeString("en-IE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
     }
 
     function weatherCodeToText(code) {
@@ -986,12 +1000,12 @@
         let cardsAdded = 0;
 
         for (
-          let i = 0;
-          i < data.hourly.time.length;
-          i++
+          let index = 0;
+          index < data.hourly.time.length;
+          index++
         ) {
           const hourDate =
-            new Date(data.hourly.time[i]);
+            new Date(data.hourly.time[index]);
 
           if (
             hourDate >= now &&
@@ -1006,40 +1020,41 @@
 
             const weather =
               weatherCodeToText(
-                data.hourly.weather_code[i]
+                data.hourly.weather_code[index]
               );
 
-            const rainValue =
-              data.hourly.precipitation_probability[i] ??
-              0;
+            const rain =
+              data.hourly.precipitation_probability[index] ?? 0;
 
             forecast.insertAdjacentHTML(
               "beforeend",
               `
                 <div class="hour-card">
+
                   <div class="hour-time">
-                    ${hourLabel}
+                    ${escapeHtml(hourLabel)}
                   </div>
 
                   <div class="hour-icon">
-                    ${weather[0]}
+                    ${escapeHtml(weather[0])}
                   </div>
 
                   <div class="hour-temp">
                     ${Math.round(
-                      data.hourly.temperature_2m[i]
+                      data.hourly.temperature_2m[index]
                     )}°C
                   </div>
 
                   <div class="rain">
-                    Rain ${rainValue}%
+                    Rain ${rain}%
                   </div>
 
                   <div class="wind">
                     Wind ${Math.round(
-                      data.hourly.wind_speed_10m[i]
+                      data.hourly.wind_speed_10m[index]
                     )} km/h
                   </div>
+
                 </div>
               `
             );
@@ -1048,57 +1063,308 @@
           }
         }
 
-        const updatedTime = new Date();
-
-        document.getElementById(
-          "weatherUpdated"
-        ).textContent =
+        document.getElementById("weatherUpdated").textContent =
           "Weather updated " +
-          updatedTime.toLocaleTimeString("en-IE", {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false
-          });
+          formatTime(new Date());
 
       } catch (error) {
-        console.error(
-          "Weather loading failed:",
-          error
-        );
+        console.error("Weather loading failed:", error);
 
-        document.getElementById(
-          "condition"
-        ).textContent =
+        document.getElementById("condition").textContent =
           "Weather temporarily unavailable";
 
-        document.getElementById(
-          "weatherUpdated"
-        ).textContent =
+        document.getElementById("weatherUpdated").textContent =
           "Unable to load weather data";
       }
     }
 
-    function updateTestStatusTime() {
-      const now = new Date();
+    async function loadNotionDashboard() {
+      try {
+        const response = await fetch(
+          `${API_URL}?time=${Date.now()}`,
+          {
+            cache: "no-store"
+          }
+        );
 
-      document.getElementById(
-        "siteStatusUpdated"
-      ).textContent =
+        if (!response.ok) {
+          throw new Error(
+            `Dashboard API returned ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          throw new Error(
+            data.error || "Dashboard API error"
+          );
+        }
+
+        renderStatus(data.status);
+        renderMessages(data.messages || []);
+        renderLostPersons(data.lostPersons || []);
+
+        document.getElementById("dashboardUpdated").textContent =
+          formatTime(new Date());
+
+      } catch (error) {
+        console.error(
+          "Notion dashboard loading failed:",
+          error
+        );
+
+        showDashboardError();
+      }
+    }
+
+    function renderStatus(status) {
+      const panel =
+        document.getElementById("statusPanel");
+
+      const value =
+        String(status?.value || "UNKNOWN")
+          .toUpperCase();
+
+      panel.classList.remove(
+        "status-amber",
+        "status-red",
+        "status-grey"
+      );
+
+      if (value === "AMBER") {
+        panel.classList.add("status-amber");
+      } else if (value === "RED") {
+        panel.classList.add("status-red");
+      } else if (value !== "GREEN") {
+        panel.classList.add("status-grey");
+      }
+
+      document.getElementById("siteStatus").textContent =
+        value;
+
+      document.getElementById("siteStatusMessage").textContent =
+        status?.message ||
+        "Check with Event Control";
+
+      document.getElementById("siteStatusIcon").textContent =
+        value === "GREEN"
+          ? "●"
+          : value === "AMBER"
+            ? "▲"
+            : value === "RED"
+              ? "■"
+              : "?";
+
+      document.getElementById("siteStatusUpdated").textContent =
         "Last updated: " +
-        now.toLocaleTimeString("en-IE", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false
-        });
+        formatTime(status?.updatedAt);
+    }
+
+    function renderMessages(messages) {
+      const container =
+        document.getElementById("controlMessages");
+
+      container.innerHTML = "";
+
+      if (messages.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            No current control messages
+          </div>
+        `;
+
+        return;
+      }
+
+      messages.slice(0, 3).forEach((message) => {
+        container.insertAdjacentHTML(
+          "beforeend",
+          `
+            <div class="message-item">
+
+              <div class="message-icon">
+                📣
+              </div>
+
+              <div>
+
+                <div class="message-title">
+                  ${escapeHtml(message.title)}
+                </div>
+
+                ${
+                  message.description
+                    ? `
+                      <div class="message-description">
+                        ${escapeHtml(message.description)}
+                      </div>
+                    `
+                    : ""
+                }
+
+              </div>
+
+              <div class="message-time">
+                ${escapeHtml(formatTime(message.time))}
+              </div>
+
+            </div>
+          `
+        );
+      });
+    }
+
+    function renderLostPersons(lostPersons) {
+      const container =
+        document.getElementById("lostPersons");
+
+      container.innerHTML = "";
+
+      if (lostPersons.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            No active lost or vulnerable person cases
+          </div>
+        `;
+
+        return;
+      }
+
+      lostPersons.slice(0, 3).forEach((person) => {
+        const photoHtml =
+          person.photo
+            ? `
+              <img
+                class="lost-photo"
+                src="${escapeHtml(person.photo)}"
+                alt="${escapeHtml(person.title)}"
+                referrerpolicy="no-referrer"
+              >
+            `
+            : `
+              <div class="lost-photo-placeholder">
+                🧒
+              </div>
+            `;
+
+        const typeTag =
+          person.type
+            ? `
+              <span class="lost-tag">
+                ${escapeHtml(person.type)}
+              </span>
+            `
+            : "";
+
+        const statusTag =
+          person.status
+            ? `
+              <span class="lost-tag">
+                ${escapeHtml(person.status)}
+              </span>
+            `
+            : "";
+
+        container.insertAdjacentHTML(
+          "beforeend",
+          `
+            <div class="lost-item">
+
+              <div class="lost-photo-wrap">
+                ${photoHtml}
+              </div>
+
+              <div class="lost-content">
+
+                <div class="lost-header">
+
+                  <div class="lost-title">
+                    ${escapeHtml(person.title)}
+                  </div>
+
+                  <div class="lost-time">
+                    ${escapeHtml(formatTime(person.time))}
+                  </div>
+
+                </div>
+
+                ${
+                  person.description
+                    ? `
+                      <div class="lost-description">
+                        ${escapeHtml(person.description)}
+                      </div>
+                    `
+                    : ""
+                }
+
+                <div class="lost-tags">
+                  ${typeTag}
+                  ${statusTag}
+                </div>
+
+              </div>
+
+            </div>
+          `
+        );
+      });
+    }
+
+    function showDashboardError() {
+      document.getElementById("controlMessages").innerHTML = `
+        <div class="empty-state connection-error">
+          Unable to connect to control messages
+        </div>
+      `;
+
+      document.getElementById("lostPersons").innerHTML = `
+        <div class="empty-state connection-error">
+          Unable to connect to active cases
+        </div>
+      `;
+
+      const panel =
+        document.getElementById("statusPanel");
+
+      panel.classList.remove(
+        "status-amber",
+        "status-red"
+      );
+
+      panel.classList.add("status-grey");
+
+      document.getElementById("siteStatus").textContent =
+        "OFFLINE";
+
+      document.getElementById("siteStatusMessage").textContent =
+        "Unable to connect to Notion";
+
+      document.getElementById("siteStatusIcon").textContent =
+        "?";
+
+      document.getElementById("siteStatusUpdated").textContent =
+        "Check the dashboard connection";
+
+      document.getElementById("dashboardUpdated").textContent =
+        "Connection error";
     }
 
     updateClock();
     setInterval(updateClock, 1000);
 
     loadWeather();
-    setInterval(loadWeather, 15 * 60 * 1000);
+    setInterval(
+      loadWeather,
+      WEATHER_REFRESH_INTERVAL
+    );
 
-    updateTestStatusTime();
+    loadNotionDashboard();
+    setInterval(
+      loadNotionDashboard,
+      NOTION_REFRESH_INTERVAL
+    );
   </script>
 
 </body>
