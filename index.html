@@ -1,318 +1,1105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Event Control Time and Weather</title>
+  <meta charset="UTF-8">
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #111827;
-    overflow: hidden;
-  }
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  .widget {
-    width: 100%;
-    max-width: 760px;
-    box-sizing: border-box;
-    padding: 14px 18px;
-    border-radius: 18px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.07);
-  }
+  <title>Forest Fest Event Control Dashboard</title>
 
-  .label {
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 1px;
-    color: #374151;
-    margin-bottom: 8px;
-  }
+  <style>
+    :root {
+      --background: #050706;
+      --panel: #0c100e;
+      --panel-light: #111714;
+      --border: #303833;
+      --text: #ffffff;
+      --muted: #aab3ad;
 
-  .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 16px;
-  }
+      --orange: #ff9800;
+      --pink: #ff4775;
+      --green: #76d116;
+      --amber: #ffb300;
+      --red: #ff3348;
+      --blue: #38a8ff;
+    }
 
-  .clock {
-    font-size: 52px;
-    font-weight: 900;
-    letter-spacing: 1px;
-    line-height: 0.95;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  .date {
-    margin-top: 6px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #374151;
-  }
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-  .weather-main {
-    text-align: right;
-    min-width: 210px;
-  }
+    body {
+      overflow-x: hidden;
+    }
 
-  .location {
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 0.4px;
-    color: #111827;
-  }
+    .dashboard {
+      width: 100%;
+      min-height: 100vh;
+      padding: 22px;
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(20, 63, 39, 0.14),
+          transparent 38%
+        ),
+        var(--background);
+    }
 
-  .temp {
-    font-size: 36px;
-    font-weight: 900;
-    margin-top: 4px;
-    line-height: 1;
-  }
+    .top-section {
+      display: grid;
+      grid-template-columns: 260px 1fr 1fr;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 18px;
+    }
 
-  .condition {
-    font-size: 14px;
-    color: #4b5563;
-    font-weight: 700;
-    margin-top: 6px;
-  }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 155px;
+    }
 
-  .section-title {
-    margin-top: 14px;
-    margin-bottom: 7px;
-    font-size: 13px;
-    font-weight: 900;
-    color: #374151;
-    letter-spacing: 0.8px;
-  }
+    .logo {
+      display: block;
+      width: 100%;
+      max-width: 245px;
+      max-height: 145px;
+      object-fit: contain;
+    }
 
-  .forecast {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
+    .time-area {
+      min-width: 0;
+    }
 
-  .hour-card {
-    background: #f9fafb;
-    border-radius: 12px;
-    padding: 8px 6px;
-    text-align: center;
-    border: 1px solid #e5e7eb;
-  }
+    .section-label {
+      margin-bottom: 8px;
+      color: #ffd000;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
 
-  .hour-time {
-    font-size: 13px;
-    font-weight: 900;
-    color: #111827;
-  }
-
-  .icon {
-    font-size: 22px;
-    margin: 3px 0;
-  }
-
-  .hour-temp {
-    font-size: 14px;
-    font-weight: 900;
-    color: #111827;
-  }
-
-  .rain {
-    font-size: 11px;
-    color: #2563eb;
-    margin-top: 2px;
-    font-weight: 700;
-  }
-
-  .wind {
-    font-size: 11px;
-    color: #4b5563;
-    margin-top: 2px;
-    font-weight: 700;
-  }
-
-  .updated {
-    margin-top: 8px;
-    font-size: 10px;
-    color: #9ca3af;
-    text-align: right;
-  }
-
-  @media (max-width: 620px) {
     .clock {
-      font-size: 44px;
+      color: #ffffff;
+      font-size: clamp(68px, 7vw, 126px);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .date {
+      margin-top: 14px;
+      color: #ffffff;
+      font-size: clamp(20px, 2vw, 32px);
+      font-weight: 700;
     }
 
     .weather-main {
-      min-width: 170px;
+      min-height: 155px;
+      padding-left: 34px;
+      border-left: 1px solid #3c433f;
+      text-align: right;
+    }
+
+    .location {
+      color: #ffd000;
+      font-size: clamp(18px, 1.6vw, 27px);
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .current-weather-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 22px;
+      margin-top: 10px;
+    }
+
+    .current-icon {
+      font-size: clamp(48px, 5vw, 82px);
+      line-height: 1;
+    }
+
+    .temp {
+      color: #ffffff;
+      font-size: clamp(64px, 7vw, 116px);
+      font-weight: 900;
+      line-height: 0.9;
+    }
+
+    .condition {
+      margin-top: 14px;
+      color: #ffffff;
+      font-size: clamp(18px, 1.7vw, 29px);
+      font-weight: 500;
+    }
+
+    .forecast-section {
+      margin-bottom: 18px;
+      padding: 14px 18px 12px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.025),
+          rgba(255, 255, 255, 0.008)
+        );
+    }
+
+    .forecast-title {
+      margin-bottom: 8px;
+      color: #ffffff;
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
     .forecast {
-      grid-template-columns: repeat(2, 1fr);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
-  }
-</style>
+
+    .hour-card {
+      min-height: 168px;
+      padding: 12px 10px;
+      border: 1px solid #353d38;
+      border-radius: 13px;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.035),
+          rgba(255, 255, 255, 0.012)
+        );
+      text-align: center;
+    }
+
+    .hour-time {
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .hour-icon {
+      margin: 6px 0;
+      font-size: 38px;
+      line-height: 1;
+    }
+
+    .hour-temp {
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .rain {
+      margin-top: 4px;
+      color: var(--blue);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .wind {
+      margin-top: 4px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .weather-updated {
+      margin-top: 8px;
+      color: #a8ada9;
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .information-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.16fr;
+      gap: 14px;
+    }
+
+    .information-panel {
+      min-height: 390px;
+      padding: 14px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      background:
+        linear-gradient(
+          160deg,
+          rgba(255, 255, 255, 0.025),
+          rgba(255, 255, 255, 0.008)
+        );
+    }
+
+    .control-panel {
+      border-color: var(--orange);
+    }
+
+    .lost-panel {
+      border-color: var(--pink);
+    }
+
+    .status-panel {
+      border-color: var(--green);
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(91, 185, 18, 0.16),
+          rgba(0, 0, 0, 0.05) 58%
+        ),
+        linear-gradient(
+          160deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.005)
+        );
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      margin-bottom: 10px;
+      font-size: clamp(18px, 1.5vw, 25px);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .control-panel .panel-heading {
+      color: var(--orange);
+    }
+
+    .lost-panel .panel-heading {
+      color: var(--pink);
+    }
+
+    .panel-heading-icon {
+      flex: 0 0 auto;
+      font-size: 31px;
+    }
+
+    .message-list,
+    .lost-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message-item {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 76px;
+      padding: 9px 10px;
+      border-bottom: 1px solid #343b37;
+      background: rgba(255, 255, 255, 0.018);
+    }
+
+    .message-item:first-child {
+      border-radius: 9px 9px 0 0;
+    }
+
+    .message-item:last-child {
+      border-bottom: 0;
+      border-radius: 0 0 9px 9px;
+    }
+
+    .message-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--orange);
+      font-size: 22px;
+    }
+
+    .message-text {
+      font-size: clamp(17px, 1.35vw, 23px);
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .message-time {
+      color: #c1c7c3;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .empty-message {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 235px;
+      padding: 20px;
+      border: 1px dashed #4b534e;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .lost-item {
+      padding: 12px;
+      border: 1px solid #3d4540;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.018);
+    }
+
+    .lost-person-top {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: start;
+      gap: 10px;
+    }
+
+    .lost-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--pink);
+      font-size: 22px;
+    }
+
+    .lost-title {
+      font-size: clamp(18px, 1.4vw, 24px);
+      font-weight: 900;
+    }
+
+    .lost-description {
+      margin-top: 3px;
+      color: #e5e7e6;
+      font-size: clamp(15px, 1.1vw, 19px);
+      line-height: 1.3;
+    }
+
+    .lost-time {
+      color: var(--pink);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .lost-location {
+      margin-top: 10px;
+      padding-left: 58px;
+      color: #ffffff;
+      font-size: clamp(15px, 1.1vw, 19px);
+      line-height: 1.25;
+    }
+
+    .lost-location-icon {
+      margin-right: 6px;
+      color: var(--pink);
+    }
+
+    .status-content {
+      display: flex;
+      min-height: 310px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .status-label {
+      color: #ffffff;
+      font-size: clamp(26px, 2.2vw, 40px);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .status-value {
+      margin: 8px 0 2px;
+      color: var(--green);
+      font-size: clamp(88px, 9vw, 160px);
+      font-weight: 900;
+      line-height: 0.95;
+      text-transform: uppercase;
+      text-shadow: 0 0 24px rgba(118, 209, 22, 0.2);
+    }
+
+    .status-icon {
+      margin-top: 4px;
+      color: var(--green);
+      font-size: 58px;
+      line-height: 1;
+    }
+
+    .status-message {
+      margin-top: 8px;
+      color: #ffffff;
+      font-size: clamp(21px, 1.8vw, 31px);
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .status-updated {
+      margin-top: 16px;
+      color: var(--green);
+      font-size: 16px;
+    }
+
+    .status-panel.status-amber {
+      border-color: var(--amber);
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(255, 179, 0, 0.17),
+          rgba(0, 0, 0, 0.05) 58%
+        );
+    }
+
+    .status-panel.status-amber .status-value,
+    .status-panel.status-amber .status-icon,
+    .status-panel.status-amber .status-updated {
+      color: var(--amber);
+    }
+
+    .status-panel.status-red {
+      border-color: var(--red);
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(255, 51, 72, 0.17),
+          rgba(0, 0, 0, 0.05) 58%
+        );
+    }
+
+    .status-panel.status-red .status-value,
+    .status-panel.status-red .status-icon,
+    .status-panel.status-red .status-updated {
+      color: var(--red);
+    }
+
+    .footer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 18px;
+      margin-top: 14px;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .footer-warning {
+      color: #ffffff;
+      font-size: clamp(16px, 1.45vw, 24px);
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .footer-refresh {
+      color: #b8bfba;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .refresh-value {
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    @media (max-width: 1100px) {
+      .top-section {
+        grid-template-columns: 190px 1fr 1fr;
+        gap: 18px;
+      }
+
+      .logo {
+        max-width: 180px;
+      }
+
+      .information-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .status-panel {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .dashboard {
+        padding: 12px;
+      }
+
+      .top-section {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .logo-area {
+        min-height: auto;
+      }
+
+      .logo {
+        max-width: 230px;
+      }
+
+      .time-area {
+        text-align: center;
+      }
+
+      .clock {
+        font-size: 64px;
+      }
+
+      .weather-main {
+        min-height: auto;
+        padding-top: 18px;
+        padding-left: 0;
+        border-top: 1px solid #3c433f;
+        border-left: 0;
+        text-align: center;
+      }
+
+      .current-weather-row {
+        justify-content: center;
+      }
+
+      .forecast {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .information-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .status-panel {
+        grid-column: auto;
+      }
+
+      .footer {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <div class="widget">
-    <div class="label">EVENT CONTROL TIME</div>
 
-    <div class="top-row">
-      <div>
-        <div class="clock" id="clock">--:--:--</div>
-        <div class="date" id="date">Loading date...</div>
+  <main class="dashboard">
+
+    <section class="top-section">
+
+      <div class="logo-area">
+        <img
+          class="logo"
+          src="forest-fest-logo-white.png"
+          alt="Forest Fest 2026"
+        >
+      </div>
+
+      <div class="time-area">
+        <div class="section-label">Event Control Time</div>
+
+        <div
+          class="clock"
+          id="clock"
+        >
+          --:--:--
+        </div>
+
+        <div
+          class="date"
+          id="date"
+        >
+          Loading date...
+        </div>
       </div>
 
       <div class="weather-main">
-        <div class="location">MARLAY PARK / RATHFARNHAM</div>
-        <div class="temp" id="temp">--°C</div>
-        <div class="condition" id="condition">Loading weather...</div>
+
+        <div class="location">
+          Emo / Portlaoise
+        </div>
+
+        <div class="current-weather-row">
+          <div
+            class="current-icon"
+            id="currentIcon"
+          >
+            🌡️
+          </div>
+
+          <div
+            class="temp"
+            id="temp"
+          >
+            --°C
+          </div>
+        </div>
+
+        <div
+          class="condition"
+          id="condition"
+        >
+          Loading weather...
+        </div>
+
       </div>
-    </div>
 
-    <div class="section-title">NEXT 4 HOURS</div>
-    <div class="forecast" id="forecast"></div>
+    </section>
 
-    <div class="updated" id="updated">Weather data loading...</div>
-  </div>
+    <section class="forecast-section">
 
-<script>
-  const latitude = 53.277;
-  const longitude = -6.268;
+      <div class="forecast-title">
+        Next 4 Hours
+      </div>
 
-  function updateClock() {
-    const now = new Date();
+      <div
+        class="forecast"
+        id="forecast"
+      ></div>
 
-    document.getElementById("clock").textContent = now.toLocaleTimeString("en-IE", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false
-    });
+      <div
+        class="weather-updated"
+        id="weatherUpdated"
+      >
+        Weather data loading...
+      </div>
 
-    document.getElementById("date").textContent = now.toLocaleDateString("en-IE", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    });
-  }
+    </section>
 
-  function weatherCodeToText(code) {
-    const codes = {
-      0: ["☀️", "Clear sky"],
-      1: ["🌤️", "Mainly clear"],
-      2: ["⛅", "Partly cloudy"],
-      3: ["☁️", "Overcast"],
-      45: ["🌫️", "Fog"],
-      48: ["🌫️", "Rime fog"],
-      51: ["🌦️", "Light drizzle"],
-      53: ["🌦️", "Moderate drizzle"],
-      55: ["🌧️", "Dense drizzle"],
-      56: ["🌧️", "Freezing drizzle"],
-      57: ["🌧️", "Heavy freezing drizzle"],
-      61: ["🌧️", "Slight rain"],
-      63: ["🌧️", "Moderate rain"],
-      65: ["🌧️", "Heavy rain"],
-      66: ["🌧️", "Freezing rain"],
-      67: ["🌧️", "Heavy freezing rain"],
-      71: ["🌨️", "Slight snow"],
-      73: ["🌨️", "Moderate snow"],
-      75: ["❄️", "Heavy snow"],
-      77: ["❄️", "Snow grains"],
-      80: ["🌦️", "Rain showers"],
-      81: ["🌧️", "Heavy showers"],
-      82: ["⛈️", "Violent showers"],
-      85: ["🌨️", "Snow showers"],
-      86: ["❄️", "Heavy snow showers"],
-      95: ["⛈️", "Thunderstorm"],
-      96: ["⛈️", "Thunderstorm with hail"],
-      99: ["⛈️", "Severe thunderstorm"]
-    };
+    <section class="information-grid">
 
-    return codes[code] || ["🌡️", "Weather update"];
-  }
+      <article class="information-panel control-panel">
 
-  async function loadWeather() {
-    const url =
-      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
-      `&current=temperature_2m,weather_code,wind_speed_10m` +
-      `&hourly=temperature_2m,precipitation_probability,weather_code,wind_speed_10m` +
-      `&timezone=Europe%2FDublin`;
+        <div class="panel-heading">
+          <span class="panel-heading-icon">📣</span>
+          <span>Control Messages</span>
+        </div>
 
-    try {
-      const response = await fetch(url);
+        <div
+          class="message-list"
+          id="controlMessages"
+        >
 
-      if (!response.ok) {
-        throw new Error("Weather response not ok");
-      }
+          <div class="message-item">
+            <div class="message-icon">🚚</div>
 
-      const data = await response.json();
-      const currentWeather = weatherCodeToText(data.current.weather_code);
+            <div class="message-text">
+              Arena vehicle curfew in place
+            </div>
 
-      document.getElementById("temp").textContent =
-        Math.round(data.current.temperature_2m) + "°C";
+            <div class="message-time">
+              12:58
+            </div>
+          </div>
 
-      document.getElementById("condition").textContent =
-        currentWeather[1] + " | Wind " + Math.round(data.current.wind_speed_10m) + " km/h";
+          <div class="message-item">
+            <div class="message-icon">💧</div>
 
-      const forecast = document.getElementById("forecast");
-      forecast.innerHTML = "";
+            <div class="message-text">
+              Remind all staff to hydrate and apply suncream
+            </div>
 
+            <div class="message-time">
+              11:55
+            </div>
+          </div>
+
+          <div class="message-item">
+            <div class="message-icon">🎙️</div>
+
+            <div class="message-text">
+              Stage down
+            </div>
+
+            <div class="message-time">
+              11:40
+            </div>
+          </div>
+
+        </div>
+
+      </article>
+
+      <article class="information-panel lost-panel">
+
+        <div class="panel-heading">
+          <span class="panel-heading-icon">🧒</span>
+          <span>Lost Child / Vulnerable Person</span>
+        </div>
+
+        <div
+          class="lost-list"
+          id="lostPersons"
+        >
+
+          <div class="lost-item">
+
+            <div class="lost-person-top">
+
+              <div class="lost-icon">
+                🧒
+              </div>
+
+              <div>
+                <div class="lost-title">
+                  12-year-old male missing
+                </div>
+
+                <div class="lost-description">
+                  Wearing a red top, black jeans and has blond hair.
+                </div>
+              </div>
+
+              <div class="lost-time">
+                12:33
+              </div>
+
+            </div>
+
+            <div class="lost-location">
+              <span class="lost-location-icon">📍</span>
+              Last seen: <strong>Main Arena – North Side</strong>
+            </div>
+
+          </div>
+
+          <div class="lost-item">
+
+            <div class="lost-person-top">
+
+              <div class="lost-icon">
+                🧒
+              </div>
+
+              <div>
+                <div class="lost-title">
+                  8-year-old female missing
+                </div>
+
+                <div class="lost-description">
+                  Wearing a blue hoodie and white leggings.
+                </div>
+              </div>
+
+              <div class="lost-time">
+                12:10
+              </div>
+
+            </div>
+
+            <div class="lost-location">
+              <span class="lost-location-icon">📍</span>
+              Last seen: <strong>Family Campsite – Purple</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+      <article
+        class="information-panel status-panel"
+        id="statusPanel"
+      >
+
+        <div class="status-content">
+
+          <div class="status-label">
+            Site Status
+          </div>
+
+          <div
+            class="status-value"
+            id="siteStatus"
+          >
+            Green
+          </div>
+
+          <div
+            class="status-icon"
+            id="siteStatusIcon"
+          >
+            ●
+          </div>
+
+          <div
+            class="status-message"
+            id="siteStatusMessage"
+          >
+            All areas operating normally
+          </div>
+
+          <div
+            class="status-updated"
+            id="siteStatusUpdated"
+          >
+            Last updated: --
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <footer class="footer">
+
+      <div class="footer-warning">
+        🛡️ Report immediately on your radio to Event Control
+      </div>
+
+      <div class="footer-refresh">
+        Dashboard refresh:
+        <span class="refresh-value">30 seconds</span>
+      </div>
+
+    </footer>
+
+  </main>
+
+  <script>
+    const latitude = 53.097203;
+    const longitude = -7.208535;
+
+    function updateClock() {
       const now = new Date();
-      let cardsAdded = 0;
 
-      for (let i = 0; i < data.hourly.time.length; i++) {
-        const hourDate = new Date(data.hourly.time[i]);
+      document.getElementById("clock").textContent =
+        now.toLocaleTimeString("en-IE", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false
+        });
 
-        if (hourDate >= now && cardsAdded < 4) {
-          const hourLabel = hourDate.toLocaleTimeString("en-IE", {
+      document.getElementById("date").textContent =
+        now.toLocaleDateString("en-IE", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        });
+    }
+
+    function weatherCodeToText(code) {
+      const codes = {
+        0: ["☀️", "Clear sky"],
+        1: ["🌤️", "Mainly clear"],
+        2: ["⛅", "Partly cloudy"],
+        3: ["☁️", "Overcast"],
+        45: ["🌫️", "Fog"],
+        48: ["🌫️", "Rime fog"],
+        51: ["🌦️", "Light drizzle"],
+        53: ["🌦️", "Moderate drizzle"],
+        55: ["🌧️", "Dense drizzle"],
+        56: ["🌧️", "Freezing drizzle"],
+        57: ["🌧️", "Heavy freezing drizzle"],
+        61: ["🌧️", "Slight rain"],
+        63: ["🌧️", "Moderate rain"],
+        65: ["🌧️", "Heavy rain"],
+        66: ["🌧️", "Freezing rain"],
+        67: ["🌧️", "Heavy freezing rain"],
+        71: ["🌨️", "Slight snow"],
+        73: ["🌨️", "Moderate snow"],
+        75: ["❄️", "Heavy snow"],
+        77: ["❄️", "Snow grains"],
+        80: ["🌦️", "Rain showers"],
+        81: ["🌧️", "Heavy showers"],
+        82: ["⛈️", "Violent showers"],
+        85: ["🌨️", "Snow showers"],
+        86: ["❄️", "Heavy snow showers"],
+        95: ["⛈️", "Thunderstorm"],
+        96: ["⛈️", "Thunderstorm with hail"],
+        99: ["⛈️", "Severe thunderstorm"]
+      };
+
+      return codes[code] || ["🌡️", "Weather update"];
+    }
+
+    async function loadWeather() {
+      const url =
+        `https://api.open-meteo.com/v1/forecast` +
+        `?latitude=${latitude}` +
+        `&longitude=${longitude}` +
+        `&current=temperature_2m,weather_code,wind_speed_10m` +
+        `&hourly=temperature_2m,precipitation_probability,weather_code,wind_speed_10m` +
+        `&timezone=Europe%2FDublin`;
+
+      try {
+        const response = await fetch(url, {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error("Weather response not successful");
+        }
+
+        const data = await response.json();
+
+        const currentWeather =
+          weatherCodeToText(data.current.weather_code);
+
+        document.getElementById("currentIcon").textContent =
+          currentWeather[0];
+
+        document.getElementById("temp").textContent =
+          Math.round(data.current.temperature_2m) + "°C";
+
+        document.getElementById("condition").textContent =
+          currentWeather[1] +
+          " | Wind " +
+          Math.round(data.current.wind_speed_10m) +
+          " km/h";
+
+        const forecast =
+          document.getElementById("forecast");
+
+        forecast.innerHTML = "";
+
+        const now = new Date();
+        let cardsAdded = 0;
+
+        for (
+          let i = 0;
+          i < data.hourly.time.length;
+          i++
+        ) {
+          const hourDate =
+            new Date(data.hourly.time[i]);
+
+          if (
+            hourDate >= now &&
+            cardsAdded < 4
+          ) {
+            const hourLabel =
+              hourDate.toLocaleTimeString("en-IE", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+              });
+
+            const weather =
+              weatherCodeToText(
+                data.hourly.weather_code[i]
+              );
+
+            const rainValue =
+              data.hourly.precipitation_probability[i] ??
+              0;
+
+            forecast.insertAdjacentHTML(
+              "beforeend",
+              `
+                <div class="hour-card">
+                  <div class="hour-time">
+                    ${hourLabel}
+                  </div>
+
+                  <div class="hour-icon">
+                    ${weather[0]}
+                  </div>
+
+                  <div class="hour-temp">
+                    ${Math.round(
+                      data.hourly.temperature_2m[i]
+                    )}°C
+                  </div>
+
+                  <div class="rain">
+                    Rain ${rainValue}%
+                  </div>
+
+                  <div class="wind">
+                    Wind ${Math.round(
+                      data.hourly.wind_speed_10m[i]
+                    )} km/h
+                  </div>
+                </div>
+              `
+            );
+
+            cardsAdded++;
+          }
+        }
+
+        const updatedTime = new Date();
+
+        document.getElementById(
+          "weatherUpdated"
+        ).textContent =
+          "Weather updated " +
+          updatedTime.toLocaleTimeString("en-IE", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false
           });
 
-          const weather = weatherCodeToText(data.hourly.weather_code[i]);
+      } catch (error) {
+        console.error(
+          "Weather loading failed:",
+          error
+        );
 
-          forecast.innerHTML += `
-            <div class="hour-card">
-              <div class="hour-time">${hourLabel}</div>
-              <div class="icon">${weather[0]}</div>
-              <div class="hour-temp">${Math.round(data.hourly.temperature_2m[i])}°C</div>
-              <div class="rain">Rain ${data.hourly.precipitation_probability[i]}%</div>
-              <div class="wind">Wind ${Math.round(data.hourly.wind_speed_10m[i])} km/h</div>
-            </div>
-          `;
+        document.getElementById(
+          "condition"
+        ).textContent =
+          "Weather temporarily unavailable";
 
-          cardsAdded++;
-        }
+        document.getElementById(
+          "weatherUpdated"
+        ).textContent =
+          "Unable to load weather data";
       }
+    }
 
-      const updatedTime = new Date();
+    function updateTestStatusTime() {
+      const now = new Date();
 
-      document.getElementById("updated").textContent =
-        "Updated " + updatedTime.toLocaleTimeString("en-IE", {
+      document.getElementById(
+        "siteStatusUpdated"
+      ).textContent =
+        "Last updated: " +
+        now.toLocaleTimeString("en-IE", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: false
         });
-
-    } catch (error) {
-      document.getElementById("condition").textContent = "Weather unavailable";
-      document.getElementById("updated").textContent = "Unable to load weather data";
     }
-  }
 
-  updateClock();
-  setInterval(updateClock, 1000);
+    updateClock();
+    setInterval(updateClock, 1000);
 
-  loadWeather();
-  setInterval(loadWeather, 15 * 60 * 1000);
-</script>
+    loadWeather();
+    setInterval(loadWeather, 15 * 60 * 1000);
+
+    updateTestStatusTime();
+  </script>
+
 </body>
 </html>
