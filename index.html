@@ -13,7 +13,7 @@
     content="no-cache, no-store, must-revalidate"
   >
 
-  <title>Forest Fest Event Control Dashboard</title>
+  <title>Electric Picnic Event Control Dashboard</title>
 
   <style>
     :root {
@@ -675,15 +675,15 @@
       <div class="logo-area">
         <img
           class="logo"
-          src="forest-fest-logo-white.png"
-          alt="Forest Fest"
+          src="electric-picnic-logo.png"
+          alt="Electric Picnic"
         >
       </div>
 
       <div class="time-area">
 
         <div class="section-label">
-          Event Control Time
+          Electric Picnic Event Control
         </div>
 
         <div
@@ -705,7 +705,7 @@
       <div class="weather-main">
 
         <div class="location">
-          Emo / Portlaoise / Ireland
+          Stradbally Hall / Co. Laois / Ireland
         </div>
 
         <div class="current-weather-row">
@@ -852,11 +852,20 @@
   </main>
 
   <script>
+    /*
+      Keep this API for now.
+      We will remap it to the Electric Picnic Notion databases next.
+    */
+
     const API_URL =
       "https://forest-fest-notion-api.dna-consultancy.workers.dev/";
 
-    const latitude = 53.097203;
-    const longitude = -7.208535;
+    /*
+      Stradbally Hall / Electric Picnic
+    */
+
+    const latitude = 53.0105;
+    const longitude = -7.1555;
 
     const NOTION_REFRESH_INTERVAL =
       30 * 1000;
